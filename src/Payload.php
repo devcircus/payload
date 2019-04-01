@@ -29,10 +29,8 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      * Set the Payload status.
      *
      * @param  int  $status
-     *
-     * @return $this
      */
-    public function setStatus($status)
+    public function setStatus(int $status): PayloadContract
     {
         return tap($this, function ($instance) use ($status) {
             $instance->status = $status;
@@ -41,10 +39,8 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
 
     /**
      * Get the status of the payload.
-     *
-     * @return int
      */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
@@ -53,10 +49,8 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      * Set the Payload messages.
      *
      * @param  array  $output
-     *
-     * @return $this
      */
-    public function setMessages(array $messages)
+    public function setMessages(array $messages): PayloadContract
     {
         return tap($this, function ($instance) use ($messages) {
             $instance->messages = [$instance->messagesWrapper => $messages];
@@ -65,10 +59,8 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
 
     /**
      * Get messages array from the payload.
-     *
-     * @return array
      */
-    public function getMessages()
+    public function getMessages(): array
     {
         return $this->messages;
     }
@@ -78,13 +70,11 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      *
      * @param  mixed  $output
      * @param  string|null  $wrapper
-     *
-     * @return $this
      */
-    public function setOutput($output, ? string $wrapper = null)
+    public function setOutput($output, ? string $wrapper = null): PayloadContract
     {
         if ($wrapper) {
-            $this->setOutputWrapper($wrapper);
+            $this->outputWrapper = $wrapper;
         }
 
         return tap($this, function ($instance) use ($output) {
@@ -94,57 +84,43 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
 
     /**
      * Get the Payload output.
-     *
-     * @return array
      */
-    public function getOutput()
+    public function getOutput(): array
     {
         return $this->output;
     }
 
     /**
      * Retrieve the Payload output and wrap it.
-     * Use the outputWrapper if it is set. Otherwise use 'data'.
-     *
-     * @return array
+     * Use the outputWrapper if it is set, otherwise use 'data'.
      */
-    public function getwrappedOutput()
+    public function getwrappedOutput(): array
     {
         return $this->outputWrapper ? [$this->outputWrapper => $this->output] : ['data' => $this->output];
     }
 
     /**
-     * Set a wrapper for payload output.
-     *
-     * @param  string  $wrapper
-     *
-     * @return $this
-     */
-    private function setOutputWrapper(string $wrapper)
-    {
-        tap($this, function ($instance) use ($wrapper) {
-            $this->outputWrapper = $wrapper;
-        });
-    }
-
-    /**
      * Get the wrapper for the output.
-     *
-     * @return string
      */
-    public function getOutputWrapper()
+    public function getOutputWrapper(): string
     {
         return $this->outputWrapper;
     }
 
     /**
      * Get the wrapper for the messages.
-     *
-     * @return string
      */
-    public function getMessagesWrapper()
+    public function getMessagesWrapper(): string
     {
         return $this->messagesWrapper;
+    }
+
+    /**
+     * Prepare the Payload object to be used in a response.
+     */
+    public function forResponse(): array
+    {
+        return $this->toArray();
     }
 
     /**
@@ -188,7 +164,7 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      */
     public function toArray()
     {
-        $output = $this->outputWrapper || $this->messages ? $this->getwrappedOutput() : $this->output;
+        $output = $this->outputWrapper || $this->messages ? $this->getWrappedOutput() : $this->output;
 
         return $this->messages ? array_merge($output, $this->messages) : $output;
     }
