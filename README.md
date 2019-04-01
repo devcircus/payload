@@ -10,7 +10,7 @@
 ### Disclaimer
 The packages under the PerfectOblivion namespace exist to provide some basic functionality that I prefer not to replicate from scratch in every project. Nothing groundbreaking here.
 
-The payload package provides a simple domain payload object that can package up a result from a controller, service class, etc., so that it can be easily passed to a response.
+The payload package provides a simple domain payload object that can encapsulate a result from a controller, service class, etc., so that it can be easily passed to a response.
 
 ## Installation
 You can install the package via composer:
