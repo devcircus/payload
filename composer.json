@@ -1,0 +1,52 @@
+{
+    "name": "perfect-oblivion/payload",
+    "description": "A domain payload implementation for Laravel/PHP",
+    "version": "1.0.0",
+    "keywords": [
+        "perfect-oblivion",
+        "payload",
+        "domain",
+        "adr"
+    ],
+    "homepage": "https://github.com/perfect-oblivion/payload",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Clayton Stone",
+            "email": "clay@perfectoblivion.com",
+            "homepage": "https://perfectoblivion.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "illuminate/support": "5.7.* || 5.8.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PerfectOblivion\\Payload\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PerfectOblivion\\Payload\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "PerfectOblivion\\Payload\\PayloadServiceProvider"
+            ]
+        }
+    }
+}
