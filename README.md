@@ -1,10 +1,9 @@
 # Perfect Oblivion - Payload
 ### A domain payload implementation for Laravel/PHP
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/perfect-oblivion/payload.svg)](https://packagist.org/packages/perfect-oblivion/payload)
+[![Latest Stable Version](https://poser.pugx.org/perfect-oblivion/payload/version)](https://packagist.org/packages/perfect-oblivion/payload)
 [![Build Status](https://img.shields.io/travis/perfect-oblivion/payload/master.svg)](https://travis-ci.org/perfect-oblivion/payload)
 [![Quality Score](https://img.shields.io/scrutinizer/g/perfect-oblivion/payload.svg)](https://scrutinizer-ci.com/g/perfect-oblivion/payload)
-[![Total Downloads](https://img.shields.io/packagist/dt/perfect-oblivion/payload.svg)](https://packagist.org/packages/perfect-oblivion/payload)
+[![Total Downloads](https://poser.pugx.org/perfect-oblivion/payload/downloads)](https://packagist.org/packages/perfect-oblivion/payload)
 
 ![Perfect Oblivion](https://res.cloudinary.com/phpstage/image/upload/v1554128207/img/Oblivion.png "Perfect Oblivion")
 
