@@ -32,9 +32,10 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      */
     public function setStatus(int $status): PayloadContract
     {
-        return tap($this, function ($instance) use ($status) {
-            $instance->status = $status;
-        });
+        $instance = clone $this;
+        $instance->status = $status;
+
+        return $instance;
     }
 
     /**
@@ -52,9 +53,10 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      */
     public function setMessages(array $messages): PayloadContract
     {
-        return tap($this, function ($instance) use ($messages) {
-            $instance->messages = [$instance->messagesWrapper => $messages];
-        });
+        $instance = clone $this;
+        $instance->messages = $messages;
+
+        return $instance;
     }
 
     /**
@@ -77,9 +79,10 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
             $this->outputWrapper = $wrapper;
         }
 
-        return tap($this, function ($instance) use ($output) {
-            $instance->output = $output;
-        });
+        $instance = clone $this;
+        $instance->output = $output;
+
+        return $instance;
     }
 
     /**
@@ -165,6 +168,7 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
     public function toArray()
     {
         $output = $this->outputWrapper || $this->messages ? $this->getWrappedOutput() : $this->output;
+        $messages = $this->messages ? [$this->messagesWrapper => $this->messages] : $this->messages;
 
         return $this->messages ? array_merge($output, $this->messages) : $output;
     }
