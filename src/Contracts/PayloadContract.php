@@ -42,6 +42,13 @@ interface PayloadContract extends Status
     public function getOutput(): array;
 
     /**
+     * Get the raw Payload output.
+     *
+     * @return mixed
+     */
+    public function getRawOutput();
+
+    /**
      * Get the wrapped Payload output.
      */
     public function getWrappedOutput(): array;
@@ -57,7 +64,7 @@ interface PayloadContract extends Status
     public function getMessagesWrapper(): string;
 
     /**
-     * Prepare the Payload object to be used in a response.
+     * Return all of the components of the payload in array format.
      */
-    public function forResponse(): array;
+    public function all(): array;
 }

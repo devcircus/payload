@@ -27,7 +27,7 @@ class Response
     public function viewWithPayload()
     {
         return function (string $view, PayloadContract $payload, string $key = 'payload') {
-            return ResponseFactory::view($view, [$key => $payload->getOutput()], $payload->getStatus());
+            return ResponseFactory::view($view, [$key => $payload->getRawOutput()], $payload->getStatus());
         };
     }
 }

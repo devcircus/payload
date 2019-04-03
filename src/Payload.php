@@ -3,6 +3,7 @@
 namespace PerfectOblivion\Payload;
 
 use ArrayAccess;
+use Traversable;
 use JsonSerializable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
@@ -24,6 +25,14 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
 
     /** @var string */
     private $messagesWrapper = 'messages';
+
+    /**
+     * Initialize a Payload object.
+     */
+    public static function instance(): PayloadContract
+    {
+        return new static;
+    }
 
     /**
      * Set the Payload status.
@@ -90,6 +99,16 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      */
     public function getOutput(): array
     {
+        return $this->getArrayableItems($this->output);
+    }
+
+    /**
+     * Get the raw Payload output.
+     *
+     * @return mixed
+     */
+    public function getRawOutput()
+    {
         return $this->output;
     }
 
@@ -119,11 +138,39 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
     }
 
     /**
-     * Prepare the Payload object to be used in a response.
+     * Return all of the components of the payload in array format.
      */
-    public function forResponse(): array
+    public function all(): array
     {
-        return $this->toArray();
+        $all = ['output' => $this->getOutput()];
+        if ($this->messages) {
+            $all = array_merge($all, ['messages' => $this->getMessages()]);
+        }
+        if ($this->status) {
+            $all = array_merge($all, ['status' => $this->getStatus()]);
+        }
+
+        return $all;
+    }
+
+    /**
+     * Convert the Payload output to an array.
+     */
+    public function getArrayableItems(): array
+    {
+        if (is_array($this->output)) {
+            return $this->output;
+        } elseif ($this->output instanceof Arrayable) {
+            return $this->output->toArray();
+        } elseif ($this->output instanceof Jsonable) {
+            return json_decode($this->output->toJson(), true);
+        } elseif ($this->output instanceof JsonSerializable) {
+            return $this->output->jsonSerialize();
+        } elseif ($this->output instanceof Traversable) {
+            return iterator_to_array($this->output);
+        }
+
+        return (array) $this->output;
     }
 
     /**
@@ -167,10 +214,10 @@ class Payload implements PayloadContract, ArrayAccess, JsonSerializable, Jsonabl
      */
     public function toArray()
     {
-        $output = $this->outputWrapper || $this->messages ? $this->getWrappedOutput() : $this->output;
+        $output = $this->outputWrapper || $this->messages ? $this->getWrappedOutput() : $this->getOutput();
         $messages = $this->messages ? [$this->messagesWrapper => $this->messages] : $this->messages;
 
-        return $this->messages ? array_merge($output, $this->messages) : $output;
+        return $this->messages ? array_merge($output, $messages) : $output;
     }
 
     /**
