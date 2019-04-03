@@ -30,31 +30,97 @@ If you have this functionality disabled, add the package service provider to you
 ```
 
 ## Usage
-Currently, the package provides a Payload class and a couple of ResponseFactory macros to help convert the Payload into either a json response or return a view with the payload data.
-The provided example below, uses the Payload from within a Controller class.
+Currently, the package provides a Payload class and a couple of Laravel ResponseFactory macros to help convert the Payload into either a json response or return a view with the payload data.
+For users not using Laravel, there are a handful of methods that allow you to retrieve the Payload data easily so that it can be used further.
+
+The provided example below, utilizes a Payload from within a Controller class. The ```all()``` method returns the Payload output, messages, and status, as an array, so that each of those parts are easily accessible to be used as needed.
 
 ```php
 public function index(Request $request)
 {
     $users = \App\Models\User::get();
 
-    $payload = (new Payload)->setOutput($users)
-                   ->setMessages(['success' => 'Operation successful!'])
-                   ->setStatus($payload::STATUS_OK);
+    $payload = Payload::instance()
+                    ->setOutput($users)
+                    ->setMessages(['success' => 'Operation successful!'])
+                    ->setStatus($payload::STATUS_OK);
 
-    return $payload->forResponse();
+    return $payload->all();
+    // [
+    //     'output' => [
+    //         [
+    //             'id' => 1,
+    //             'name' => 'John Doe'
+    //         ],
+    //         [
+    //             'id' => 2,
+    //             'name' => 'Jane Doe'
+    //         ],
+    //         [
+    //             'id' => 3,
+    //             'name' => 'Sally Johnson'
+    //         ]
+    //     ],
+    //     'messages' => [
+    //         'success' => 'Operation successful!'
+    //     ],
+    //     'status' => 200
+    // ]
 }
 ```
 Messages and status are optional. You can use these values in the response you return, however you wish.
 
-To optionally wrap the output with a key, pass the key (string) as the second argument to ```setOutput```:
-```php
-$payload->setOutput($users, 'data');
-```
-> If your payload includes 'messages', the output will automatically be wrapped with a key. If you do not provide a wrapping key, the key 'data' will be used.
+> Using the ```all()``` method, if the provided output can be converted to an array automatically, it will. For instance, in Laravel, you may pass a collection of User models to ```setOutput()```. In this case, the ```all()``` method will convert the collection of User objects to an array of arrays. To retrieve the raw original data that was provided to ```setOutput()```, call the ```getRawOutput()``` method.
 
-### Response Helpers
+The following methods are available to retrieve information from the Payload object:
+```php
+
+    /**
+     * Get the status of the payload.
+     */
+    public function getStatus(): int;
+
+    /**
+     * Get messages array from the payload.
+     */
+    public function getMessages(): array;
+
+    /**
+     * Get the Payload output.
+     */
+    public function getOutput(): array;
+
+    /**
+     * Get the raw Payload output.
+     *
+     * @return mixed
+     */
+    public function getRawOutput();
+
+    /**
+     * Get the wrapped Payload output.
+     */
+    public function getWrappedOutput(): array;
+
+    /**
+     * Get the wrapper for the output.
+     */
+    public function getOutputWrapper(): string;
+
+    /**
+     * Get the wrapper for messages.
+     */
+    public function getMessagesWrapper(): string;
+
+    /**
+     * Return all of the components of the payload in array format.
+     */
+    public function all(): array;
+```
+
+### Response Helpers / Laravel
 If you are using Laravel, a couple of ResponseFactory macros are available to you, which makes sending payload responses, easier.
+
 For example:
 ```php
 $payload->setOutput($users, 'users')->setMessages(['success' => 'Operation Successful!']);
@@ -86,11 +152,13 @@ will yield the following structure:
     }
 }
 ```
+> Note: When using these helpers, the payload's status code will also be sent with the response.
+
 The other helper is ```viewWithPayload()```:
 ```php
 response()->viewWithPayload('dashboard', $payload, 'payload');
 ```
-The third argument is the string that you will use to refer to the data in your view. By default, 'payload' is used. Using the following:
+The third argument to ```viewWithPayload()``` is the string that you will use to refer to the data in your view. By default, 'payload' is used. Using the following:
 ```php
 $payload->setOutput($users, 'users')->setMessages(['success' => 'Operation Successful!']);
 return response()->viewWithPayload('dashboard', $payload);
@@ -109,86 +177,6 @@ and access your data as follows:
 ```html
 <h1>{{ $user->name }}</h1>
 <span>{{ $user->email }}</span>
-```
-
-> If you choose not to use the helper methods, refer to the PayloadContract below for the available methods on the Payload instance:
-```php
-<?php
-
-namespace PerfectOblivion\Common\Payloads\Contracts;
-
-interface PayloadContract extends Status
-{
-    /**
-     * Set the Payload status.
-     *
-     * @param  string  $status
-     *
-     * @return $this
-     */
-    public function setStatus($status);
-
-    /**
-     * Get the status of the payload.
-     *
-     * @return string
-     */
-    public function getStatus();
-
-    /**
-     * Set the Payload output.
-     *
-     * @param  mixed  $output
-     * @param  string|null  $wrapper
-     *
-     * @return $this
-     */
-    public function setOutput($output, ? string $wrapper = null);
-
-    /**
-     * Get the Payload output.
-     *
-     * @return array
-     */
-    public function getOutput();
-
-    /**
-     * Get the unwrapped Payload output.
-     *
-     * @return array
-     */
-    public function getUnwrappedOutput();
-
-    /**
-     * Set the Payload messages.
-     *
-     * @param  array  $output
-     *
-     * @return $this
-     */
-    public function setMessages(array $messages);
-
-    /**
-     * Get messages array from the payload.
-     *
-     * @return array
-     */
-    public function getMessages();
-
-    /**
-     * Get the wrapper for the output.
-     *
-     * @return string
-     */
-    public function getOutputWrapper();
-
-    /**
-     * Get the wrapper for messages.
-     *
-     * @return string
-     */
-    public function getMessagesWrapper();
-}
 ```
 
 ### Testing
