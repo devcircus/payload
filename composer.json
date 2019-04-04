@@ -1,7 +1,7 @@
 {
     "name": "perfect-oblivion/payload",
     "description": "A domain payload implementation for Laravel/PHP",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "keywords": [
         "perfect-oblivion",
         "payload",
