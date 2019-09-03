@@ -1,7 +1,7 @@
 {
     "name": "perfect-oblivion/payload",
     "description": "A domain payload implementation for Laravel/PHP",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "keywords": [
         "perfect-oblivion",
         "payload",
@@ -20,7 +20,7 @@
     ],
     "require": {
         "php": "^7.1.3",
-        "illuminate/support": "5.7.* || 5.8.*"
+        "illuminate/support": "5.7.*|5.8.*|^6.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.0"
